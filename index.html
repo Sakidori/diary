@@ -483,7 +483,7 @@
 
                 await uploadToDrive(filename, base64Content, name);
                 
-                alert("Success! Your board has been submitted to the teacher.");
+                alert("成功！ボードが送信されました。");
                 closeModal();
                 
             } catch (error) {
@@ -495,7 +495,7 @@
                 if (board) board.classList.remove('exporting');
                 
                 console.error(error);
-                alert("There was an error sending your file. Please check the setup or try again.");
+                alert("送信に失敗しました。もう一度お試しください。");
                 submitBtn.disabled = false;
                 loadingMsg.style.display = 'none';
             }
