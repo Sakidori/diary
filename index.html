@@ -174,20 +174,22 @@
             display: none;
         }
 
-        .title-input {
+        .title-text {
             margin-top: 12px;
-            border: none;
-            border-bottom: 1px solid transparent;
             text-align: center;
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
             font-size: 15px;
-            outline: none;
-            width: 100%;
-            background: transparent;
+            color: #000;
+            user-select: none; /* Prevents text from being highlighted accidentally */
+            
+            /* Multi-line wrapping rules */
+            white-space: normal; 
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.2;
+            max-height: 2.4em; /* Allows up to 2 lines of text */
+            overflow: hidden;
         }
-
-        .title-input:focus, .title-input:hover { border-bottom: 1px dashed #ccc; }
-        .exporting .title-input { border-bottom: none !important; }
 
         .modal-overlay {
             display: none;
@@ -274,27 +276,27 @@
         <div class="polaroid">
             <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
             <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <input type="text" class="title-input" value="My favorite place" spellcheck="false" readonly>
+            <div class="title-text">My favorite place</div>
         </div>
         <div class="polaroid">
             <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
             <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <input type="text" class="title-input" value="My hobby" spellcheck="false" readonly>
+            <div class="title-text">My hobby</div>
         </div>
         <div class="polaroid">
             <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
             <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <input type="text" class="title-input" value="An English word starting with &quot;M&quot;" spellcheck="false" readonly>
+            <div class="title-text">An English word starting with "M"</div>
         </div>
         <div class="polaroid">
             <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
             <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <input type="text" class="title-input" value="A selfie with a friend outside" spellcheck="false" readonly>
+            <div class="title-text">A selfie with a friend outside</div>
         </div>
         <div class="polaroid">
             <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
             <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <input type="text" class="title-input" value="My favorite animal" spellcheck="false" readonly>
+            <div class="title-text">My favorite animal</div>
         </div>
     </div>
 
