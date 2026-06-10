@@ -16,13 +16,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 10px;
+            justify-content: flex-start;
+            padding: 20px 10px;
             margin: 0;
             width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             box-sizing: border-box;
-            overflow: hidden;
+            overflow-y: auto;
             position: relative;
         }
 
@@ -48,7 +48,7 @@
 
         .emoji-sun {
             position: absolute;
-            top: 25%;
+            top: 15%;
             right: 5%;
             font-size: 120px;
             opacity: 0.2;
@@ -65,6 +65,7 @@
 
         .controls {
             margin-top: 20px;
+            margin-bottom: 20px;
             display: flex;
             gap: 15px;
             z-index: 1;
@@ -121,8 +122,8 @@
             transition: transform 0.2s;
         }
 
-        .polaroid:nth-child(even) { transform: rotate(3deg); }
-        .polaroid:nth-child(odd) { transform: rotate(-3deg); }
+        .polaroid:nth-child(even) { transform: rotate(2deg); }
+        .polaroid:nth-child(odd) { transform: rotate(-2deg); }
 
         .drop-zone {
             width: 100%;
@@ -208,10 +209,11 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            width: 100%;
+            width: 90%;
             max-width: 400px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             text-align: center;
+            box-sizing: border-box;
         }
 
         .modal-content h2 { margin-top: 0; color: #333; }
@@ -260,6 +262,43 @@
             color: #ff7eb3;
             font-weight: bold;
             margin-top: 15px;
+        }
+
+        /* --- Smartphone Optimizations (Screens < 600px) --- */
+        @media (max-width: 600px) {
+            body {
+                justify-content: flex-start;
+            }
+            h1 {
+                font-size: 26px;
+                margin-top: 10px;
+            }
+            #board {
+                padding: 15px;
+                gap: 15px;
+                width: 100%;
+            }
+            .polaroid {
+                width: 140px; /* Shrink polaroids slightly */
+                padding: 10px 10px 15px 10px;
+            }
+            .drop-zone {
+                height: 120px;
+                font-size: 11px;
+            }
+            .title-text {
+                font-size: 13px;
+            }
+            .emoji-palm {
+                font-size: 250px;
+                left: -40px;
+                top: 80%;
+            }
+            .emoji-sun {
+                font-size: 80px;
+                top: 10%;
+                right: 2%;
+            }
         }
     </style>
 </head>
@@ -412,7 +451,6 @@
             const safeClass = sClass.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeYear = year.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             
-            // Updated file name format: Year-Class_Name_Timestamp.png
             const filename = `${safeYear}-${safeClass}_${safeName}_${Date.now()}.png`;
 
             try {
