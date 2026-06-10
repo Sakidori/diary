@@ -8,7 +8,6 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Simplified background to just the gradient; emojis are real HTML elements now */
             background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
             background-attachment: fixed;
             background-size: cover;
@@ -23,25 +22,24 @@
             width: 100vw;
             height: 100vh;
             box-sizing: border-box;
-            overflow: hidden; /* Strictly prevents scrolling */
-            position: relative; /* Added to contain absolute emoji decorations */
+            overflow: hidden;
+            position: relative;
         }
 
-        /* HTML Emoji Decorations so html2canvas captures them */
         .emoji-decorations {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Let clicks pass through to the board */
-            z-index: 0; /* Sits below popups but keeps them visible */
+            pointer-events: none;
+            z-index: 0;
             overflow: hidden;
         }
 
         .emoji-palm {
             position: absolute;
-            top: 70%;
+            top: 60%;
             left: -50px;
             font-size: 380px;
             opacity: 0.15;
@@ -62,7 +60,7 @@
             color: #333;
             text-align: center;
             text-shadow: 0 2px 4px rgba(255,255,255,0.5);
-            z-index: 1; /* Keeps header above decoration layer */
+            z-index: 1;
         }
 
         .controls {
@@ -96,7 +94,6 @@
             transform: none !important;
         }
 
-        /* The main landscape board */
         #board {
             background-color: rgba(255, 255, 255, 0.85);
             background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
@@ -109,7 +106,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 25px;
-            max-width: 800px; /* Forces 3 on top, 2 on bottom comfortably */
+            max-width: 800px;
             box-sizing: border-box;
             z-index: 1;
         }
@@ -142,7 +139,7 @@
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
-            cursor: pointer; /* Added to show it's clickable */
+            cursor: pointer;
         }
 
         .drop-zone .click-hint {
@@ -166,6 +163,17 @@
             pointer-events: none;
         }
 
+        /* Empty slot styling during export */
+        .exporting .drop-zone:not(:has(img)) {
+            background-color: black !important;
+            color: transparent !important;
+            border: none;
+        }
+        
+        .exporting .drop-zone:not(:has(img)) .click-hint {
+            display: none;
+        }
+
         .title-input {
             margin-top: 12px;
             border: none;
@@ -181,7 +189,6 @@
         .title-input:focus, .title-input:hover { border-bottom: 1px dashed #ccc; }
         .exporting .title-input { border-bottom: none !important; }
 
-        /* --- Modal Styling --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -402,7 +409,9 @@
             const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeClass = sClass.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeYear = year.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            const filename = `${safeClass}_${safeYear}_${safeName}_${Date.now()}.png`;
+            
+            // Updated file name format: Year-Class_Name_Timestamp.png
+            const filename = `${safeYear}-${safeClass}_${safeName}_${Date.now()}.png`;
 
             try {
                 const board = document.getElementById('board');
@@ -414,7 +423,6 @@
                 const modal = document.getElementById('studentModal');
                 modal.classList.remove('active'); 
                 
-                // Captures the background gradient, emojis, and board entirely
                 const canvas = await html2canvas(document.body, {
                     scale: 2,
                     backgroundColor: null
