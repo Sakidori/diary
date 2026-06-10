@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Summer Photo Diary</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Shifted palm tree to absolute x=80 so it sits on the far left, well clear of the center board */
+            background-image: 
+                url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1200 800'><text x='-100' y='80%' font-size='380' opacity='0.15'>🌴</text><text x='1000' y='35%' font-size='120' opacity='0.2'>☀️</text><path d='M 0 720 Q 400 680 800 730 T 1200 700 L 1200 800 L 0 800 Z' fill='rgba(255,255,255,0.1)'/></svg>"),
+                linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden; /* Strictly prevents scrolling */
+        }
+
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 32px;
+            color: #333;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.5);
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button.primary-btn {
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #ff7eb3;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        button.primary-btn:hover {
+            background-color: #ff529a;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* The main landscape board */
+        #board {
+            background-color: rgba(255, 255, 255, 0.85);
+            background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            max-width: 800px; /* Forces 3 on top, 2 on bottom comfortably */
+            box-sizing: border-box;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 12px 12px 20px 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            width: 170px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .polaroid:nth-child(even) { transform: rotate(3deg); }
+        .polaroid:nth-child(odd) { transform: rotate(-3deg); }
+
+        .drop-zone {
+            width: 100%;
+            height: 150px;
+            background-color: #f8f9fa;
+            border: 2px dashed #ced4da;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 13px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            cursor: pointer; /* Added to show it's clickable */
+        }
+
+        .drop-zone .click-hint {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+            text-decoration: underline;
+        }
+
+        .drop-zone.dragover {
+            background-color: #e2e6ea;
+            border-color: #ff7eb3;
+        }
+
+        .drop-zone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            pointer-events: none;
+        }
+
+        .title-input {
+            margin-top: 12px;
+            border: none;
+            border-bottom: 1px solid transparent;
+            text-align: center;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            font-size: 15px;
+            outline: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        .title-input:focus, .title-input:hover { border-bottom: 1px dashed #ccc; }
+        .exporting .title-input { border-bottom: none !important; }
+
+        /* --- Modal Styling --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .modal-content h2 { margin-top: 0; color: #333; }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .modal-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .cancel-btn {
+            padding: 10px 20px;
+            background: #eee;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+        }
+        .cancel-btn:hover { background: #ddd; }
+        
+        #loading-msg {
+            display: none;
+            color: #ff7eb3;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>My Summer Photo Diary</h1>
+
+    <div id="board">
+        <div class="polaroid">
+            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+            <input type="file" class="file-input" accept="image/*" style="display: none;">
+            <input type="text" class="title-input" value="Summer 1" spellcheck="false">
+        </div>
+        <div class="polaroid">
+            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+            <input type="file" class="file-input" accept="image/*" style="display: none;">
+            <input type="text" class="title-input" value="Summer 2" spellcheck="false">
+        </div>
+        <div class="polaroid">
+            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+            <input type="file" class="file-input" accept="image/*" style="display: none;">
+            <input type="text" class="title-input" value="Summer 3" spellcheck="false">
+        </div>
+        <div class="polaroid">
+            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+            <input type="file" class="file-input" accept="image/*" style="display: none;">
+            <input type="text" class="title-input" value="Summer 4" spellcheck="false">
+        </div>
+        <div class="polaroid">
+            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+            <input type="file" class="file-input" accept="image/*" style="display: none;">
+            <input type="text" class="title-input" value="Summer 5" spellcheck="false">
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="primary-btn" onclick="openModal()">課題を提出する</button>
+    </div>
+
+    <div class="modal-overlay" id="studentModal">
+        <div class="modal-content">
+            <h2>Who are you?</h2>
+            <p style="color: #666; margin-bottom: 20px;">このフォームに記入してください</p>
+            
+            <div class="form-group">
+                <label for="studentName">名前</label>
+                <input type="text" id="studentName" placeholder="例） 大谷翔平" required>
+            </div>
+            <div class="form-group">
+                <label for="studentYear">学年</label>
+                <input type="number" id="studentYear" placeholder="例） １" required min="1" max="3">
+            </div>
+            <div class="form-group">
+                <label for="studentClass">クラス</label>
+                <input type="number" id="studentClass" placeholder="例） １" required min="1" max="6">
+            </div>
+
+            <div id="loading-msg">送信中...しばらくお待ちください...</div>
+
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeModal()">キャンセル</button>
+                <button class="primary-btn" id="confirmSubmitBtn" onclick="handleSubmission()">提出する</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration for GitHub API ---
+        const GITHUB_CONFIG = {
+            owner: 'Karamucho-Calvin',
+            repo: 'summer',
+            folderPath: 'student_submissions', 
+            token: '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' 
+        };
+
+        // --- Drag/Drop & Click to Upload Logic ---
+        const dropZones = document.querySelectorAll('.drop-zone');
+        dropZones.forEach(zone => {
+            const fileInput = zone.parentElement.querySelector('.file-input');
+
+            // Click zone to trigger hidden file input
+            zone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // File input selection change
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                processImageUpload(file, zone);
+            });
+
+            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                processImageUpload(file, zone);
+            });
+        });
+
+        function processImageUpload(file, targetZone) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = () => targetZone.innerHTML = `<img src="${reader.result}" alt="Uploaded">`;
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please drop or select a valid image file.');
+            }
+        }
+
+        // --- Modal Logic ---
+        const modal = document.getElementById('studentModal');
+        const submitBtn = document.getElementById('confirmSubmitBtn');
+        const loadingMsg = document.getElementById('loading-msg');
+
+        function openModal() {
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            loadingMsg.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+
+       // --- Submission Logic ---
+        async function handleSubmission() {
+            const name = document.getElementById('studentName').value.trim();
+            const year = parseInt(document.getElementById('studentYear').value);
+            const sClass = parseInt(document.getElementById('studentClass').value);
+
+            if (!name || isNaN(year) || isNaN(sClass)) {
+                alert("すべての項目に正しい数字を入力してください。");
+                return;
+            }
+
+            // Strict validation for numbers between 1 and 3
+            if (year < 1 || year > 3) {
+                alert("学年は 1 から 3 の間で入力してください。");
+                return;
+            }
+
+            if (sClass < 1 || sClass > 6) {
+                alert("クラスは 1 から 6 の間で入力してください。");
+                return;
+            }
+
+            const isConfirmed = confirm(`${name}さん、ボードを提出しますか？送信後の編集はできません。`);
+            if (!isConfirmed) return;
+
+            submitBtn.disabled = true;
+            loadingMsg.style.display = 'block';
+
+            const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const safeClass = sClass.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const safeYear = year.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const filename = `${safeClass}_${safeYear}_${safeName}_${Date.now()}.png`;
+
+            try {
+                const board = document.getElementById('board');
+                board.classList.add('exporting'); 
+                
+                const canvas = await html2canvas(board, {
+                    scale: 2,
+                    backgroundColor: null
+                });
+                board.classList.remove('exporting');
+
+                const dataUrl = canvas.toDataURL('image/png');
+                const base64Content = dataUrl.split(',')[1]; 
+
+                await uploadToGitHub(filename, base64Content, name);
+                
+                alert("Success! Your board has been submitted to the teacher.");
+                closeModal();
+                
+            } catch (error) {
+                console.error(error);
+                alert("There was an error sending your file. Please check the setup or try again.");
+                submitBtn.disabled = false;
+                loadingMsg.style.display = 'none';
+            }
+        }
+
+        // --- GitHub API Upload Function ---
+        async function uploadToGitHub(filename, base64Image, studentName) {
+            const path = `${GITHUB_CONFIG.folderPath}/${filename}`;
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
+
+            const payload = {
+                message: `New submission from ${studentName}`,
+                content: base64Image
+            };
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${GITHUB_CONFIG.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to upload to GitHub');
+            }
+        }
+    </script>
+</body>
+</html>
