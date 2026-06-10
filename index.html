@@ -375,17 +375,22 @@
                 const board = document.getElementById('board');
                 board.classList.add('exporting'); 
 
-                // 1. Temporarily hide the submit button controls so they don't appear in the screenshot
+                // 1. Temporarily hide the submit button controls
                 const controls = document.querySelector('.controls');
                 if (controls) controls.style.display = 'none';
+
+                // 2. Temporarily hide the modal pop-up so it isn't in the screenshot
+                const modal = document.getElementById('studentModal');
+                modal.classList.remove('active'); // Hides the pop-up momentarily
                 
-                // 2. Capture the entire body instead of just the board
+                // 3. Capture the entire body (which includes your gradient background and board)
                 const canvas = await html2canvas(document.body, {
                     scale: 2,
                     backgroundColor: null
                 });
                 
-                // 3. Restore the controls immediately after the screenshot
+                // 4. Restore the pop-up and controls immediately after the screenshot
+                modal.classList.add('active'); // Brings the pop-up back
                 if (controls) controls.style.display = 'flex';
                 board.classList.remove('exporting');
 
@@ -398,9 +403,11 @@
                 closeModal();
                 
             } catch (error) {
-                // Ensure controls come back even if there is an error
+                // Ensure everything resets properly if an error occurs
                 const controls = document.querySelector('.controls');
                 if (controls) controls.style.display = 'flex';
+                const modal = document.getElementById('studentModal');
+                if (modal) modal.classList.add('active');
                 const board = document.getElementById('board');
                 if (board) board.classList.remove('exporting');
                 
