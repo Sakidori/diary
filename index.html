@@ -16,13 +16,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding: 20px 10px;
+            justify-content: center; /* Perfectly centers on PC */
+            padding: 10px;
             margin: 0;
             width: 100vw;
-            min-height: 100vh;
+            height: 100vh; /* Locks to screen height on PC */
             box-sizing: border-box;
-            overflow-y: auto;
+            overflow: hidden; /* Prevents scrolling on PC */
             position: relative;
         }
 
@@ -48,7 +48,7 @@
 
         .emoji-sun {
             position: absolute;
-            top: 15%;
+            top: 25%;
             right: 5%;
             font-size: 120px;
             opacity: 0.2;
@@ -65,7 +65,6 @@
 
         .controls {
             margin-top: 20px;
-            margin-bottom: 20px;
             display: flex;
             gap: 15px;
             z-index: 1;
@@ -122,8 +121,8 @@
             transition: transform 0.2s;
         }
 
-        .polaroid:nth-child(even) { transform: rotate(2deg); }
-        .polaroid:nth-child(odd) { transform: rotate(-2deg); }
+        .polaroid:nth-child(even) { transform: rotate(3deg); }
+        .polaroid:nth-child(odd) { transform: rotate(-3deg); }
 
         .drop-zone {
             width: 100%;
@@ -209,7 +208,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             text-align: center;
@@ -264,10 +263,17 @@
             margin-top: 15px;
         }
 
-        /* --- Smartphone Optimizations (Screens < 600px) --- */
-        @media (max-width: 600px) {
+        /* --- Smartphone Optimizations (Screens < 768px) --- */
+        @media (max-width: 768px) {
             body {
+                height: auto; /* Allow height to expand */
+                min-height: 100vh;
+                overflow-y: auto; /* Enable scrolling on mobile */
                 justify-content: flex-start;
+                padding: 20px 10px;
+            }
+            .controls {
+                margin-bottom: 20px;
             }
             h1 {
                 font-size: 26px;
@@ -279,7 +285,7 @@
                 width: 100%;
             }
             .polaroid {
-                width: 140px; /* Shrink polaroids slightly */
+                width: 140px;
                 padding: 10px 10px 15px 10px;
             }
             .drop-zone {
