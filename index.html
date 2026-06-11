@@ -128,7 +128,6 @@
             transition: transform 0.2s;
         }
 
-        /* Slanted angles on live screen */
         .polaroid:nth-child(even) { transform: rotate(3deg); }
         .polaroid:nth-child(odd) { transform: rotate(-3deg); }
 
@@ -187,7 +186,7 @@
             overflow: hidden;
         }
 
-        /* --- Hidden Submission Template Styles (Desktop Proportions + Emojis + Slants) --- */
+        /* --- Hidden Submission Template Styles (Added Title + Moved Sun Right) --- */
         #submission-template {
             position: absolute;
             top: -9999px;
@@ -223,12 +222,24 @@
             transform: translateY(-50%);
         }
 
+        /* Sun moved further to the right (right: 3%) */
         #submission-template .emoji-sun {
             position: absolute;
             top: 25%;
-            right: 5%;
+            right: 3%;
             font-size: 120px;
             opacity: 0.2;
+        }
+
+        /* Template Title Specific Styling */
+        #submission-template h1 {
+            margin: 0 0 25px 0;
+            font-size: 42px;
+            color: #333;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.5);
+            z-index: 1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         #template-board {
@@ -256,7 +267,6 @@
             flex-direction: column;
         }
 
-        /* Restores slanted polaroid angles in template */
         #template-board .polaroid:nth-child(even) { transform: rotate(3deg); }
         #template-board .polaroid:nth-child(odd) { transform: rotate(-3deg); }
 
@@ -281,7 +291,6 @@
             top: 0; left: 0;
         }
 
-        /* Sets empty slots in the template to black for clear visual placeholders */
         #template-board .drop-zone:not(:has(img)) {
             background-color: black !important;
         }
@@ -476,6 +485,7 @@
             <span class="emoji-palm">🌴</span>
             <span class="emoji-sun">☀️</span>
         </div>
+        <h1>My Summer Photo Diary</h1>
         <div id="template-board">
             <div class="polaroid">
                 <div class="drop-zone"></div>
