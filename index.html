@@ -26,13 +26,6 @@
             position: relative;
         }
 
-        /* Elements hidden strictly during the screenshot export */
-        body.exporting .top-left-btn,
-        body.exporting .controls,
-        body.exporting .modal-overlay {
-            display: none !important;
-        }
-
         .top-left-btn {
             position: absolute;
             top: 20px;
@@ -177,17 +170,6 @@
             pointer-events: none;
         }
 
-        /* Set empty slot backgrounds to black during export */
-        body.exporting .drop-zone:not(:has(img)) {
-            background-color: black !important;
-            color: transparent !important;
-            border: none;
-        }
-        
-        body.exporting .drop-zone:not(:has(img)) .click-hint {
-            display: none;
-        }
-
         .title-text {
             margin-top: 12px;
             text-align: center;
@@ -199,6 +181,84 @@
             white-space: normal; 
             word-wrap: break-word;
             overflow-wrap: break-word;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+        }
+
+        /* --- Hidden Submission Template Styles (Strict Desktop Proportions) --- */
+        #submission-template {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 1024px;
+            height: 768px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        #template-board {
+            background-color: rgba(255, 255, 255, 0.85);
+            background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            width: 800px;
+            box-sizing: border-box;
+        }
+
+        #template-board .polaroid {
+            background: white;
+            padding: 12px 12px 20px 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            width: 170px;
+            display: flex;
+            flex-direction: column;
+            transform: none !important; /* Removes rotation so alignment is clean */
+        }
+
+        #template-board .drop-zone {
+            width: 100%;
+            height: 150px;
+            background-color: #f8f9fa;
+            border: 2px dashed #ced4da;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        #template-board .drop-zone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        
+        /* Sets empty template slots to black for design consistency */
+        #template-board .drop-zone:not(:has(img)) {
+            background-color: black !important;
+        }
+
+        #template-board .title-text {
+            margin-top: 12px;
+            text-align: center;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            font-size: 15px;
+            color: #000;
+            word-wrap: break-word;
             line-height: 1.2;
             max-height: 2.4em;
             overflow: hidden;
@@ -377,6 +437,31 @@
         <button class="primary-btn" onclick="openModal()">課題を提出する</button>
     </div>
 
+    <div id="submission-template">
+        <div id="template-board">
+            <div class="polaroid">
+                <div class="drop-zone"></div>
+                <div class="title-text">My favorite place</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone"></div>
+                <div class="title-text">My hobby</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone"></div>
+                <div class="title-text">An English word starting with "M"</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone"></div>
+                <div class="title-text">A selfie with a friend outside</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone"></div>
+                <div class="title-text">My favorite animal</div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="studentModal">
         <div class="modal-content">
             <h2>Who are you?</h2>
@@ -406,8 +491,8 @@
 
     <script>
         // --- Drag/Drop & Click to Upload Logic ---
-        const dropZones = document.querySelectorAll('.drop-zone');
-        dropZones.forEach(zone => {
+        const dropZones = document.querySelectorAll('#board .drop-zone');
+        dropZones.forEach((zone, index) => {
             const fileInput = zone.parentElement.querySelector('.file-input');
 
             zone.addEventListener('click', () => {
@@ -416,7 +501,7 @@
 
             fileInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
-                processImageUpload(file, zone);
+                processImageUpload(file, zone, index);
             });
 
             zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
@@ -425,20 +510,28 @@
                 e.preventDefault();
                 zone.classList.remove('dragover');
                 const file = e.dataTransfer.files[0];
-                processImageUpload(file, zone);
+                processImageUpload(file, zone, index);
             });
         });
 
-        function processImageUpload(file, targetZone) {
+        function processImageUpload(file, targetZone, index) {
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = () => {
+                    // Update visible UI
                     targetZone.innerHTML = `<img src="${reader.result}" alt="Uploaded">`;
                     
+                    // Sync file input
                     const fileInput = targetZone.parentElement.querySelector('.file-input');
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(file);
                     fileInput.files = dataTransfer.files;
+
+                    // Sync hidden template zone simultaneously
+                    const templateZones = document.querySelectorAll('#submission-template .drop-zone');
+                    if (templateZones[index]) {
+                        templateZones[index].innerHTML = `<img src="${reader.result}" alt="Uploaded">`;
+                    }
                 };
                 reader.readAsDataURL(file);
             } else {
@@ -497,7 +590,7 @@
 
             try {
                 // 1. COMPRESS & UPLOAD INDIVIDUAL IMAGES IN PARALLEL
-                const polaroids = document.querySelectorAll('.polaroid');
+                const polaroids = document.querySelectorAll('#board .polaroid');
                 const uploadPromises = [];
 
                 for (let i = 0; i < polaroids.length; i++) {
@@ -516,15 +609,12 @@
                 // Fire all individual image uploads concurrently
                 await Promise.all(uploadPromises);
 
-                // 2. PREPARE SCREENSHOT (Hides unwanted buttons seamlessly)
-                document.body.classList.add('exporting'); 
-
-                const canvas = await html2canvas(document.body, {
+                // 2. RENDER SCREENSHOT FROM HIDDEN OFFSCREEN TEMPLATE
+                const templateElement = document.getElementById('submission-template');
+                const canvas = await html2canvas(templateElement, {
                     scale: 1.5,
                     backgroundColor: null
                 });
-                
-                document.body.classList.remove('exporting');
 
                 const dataUrl = canvas.toDataURL('image/png', 0.8);
                 const base64Board = dataUrl.split(',')[1]; 
@@ -532,12 +622,10 @@
                 // 3. UPLOAD BOARD SCREENSHOT
                 await uploadToDrive(boardFilename, base64Board, 'image/png', targetFolder);
                 
-                alert("成功！個々の写真とボードが送信されました。");
+                alert("成功！ボードが送信されました。");
                 closeModal();
                 
             } catch (error) {
-                document.body.classList.remove('exporting');
-                
                 console.error(error);
                 alert("送信に失敗しました。もう一度お試しください。");
                 submitBtn.disabled = false;
@@ -545,7 +633,7 @@
             }
         }
 
-        // --- Helper: Compress Image via Canvas (Quality lowered to 0.5) ---
+        // --- Helper: Compress Image via Canvas ---
         function compressImage(file, maxWidth, maxHeight) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -575,7 +663,6 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Convert to Base64 (JPEG, Quality aggressively dropped to 0.5 for massive speed)
                         const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
                         resolve(dataUrl.split(',')[1]);
                     };
@@ -587,7 +674,7 @@
 
         // --- Google Drive Upload Function with Folder Support ---
         async function uploadToDrive(filename, base64Data, mimeType, folderName) {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTtIlI4jUY5lYdHYFNEWBDKbu0rcGCCHeyXK-UHpbHanmRwYn0Dymnkqk5cbltbWQC/exec";
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyb6ICqHNKpzv6zcNSxVTYVyIA7xvq3_w2miTuONTci4yNVEERsz3aLSkU3L0Mkoj9S/exec";
 
             const formData = new FormData();
             formData.append('base64Data', base64Data);
@@ -600,10 +687,10 @@
                 body: formData
             });
 
-            const result = await response.json();
+            const aResult = await response.json();
             
-            if (result.result !== 'success') {
-                throw new Error(result.message || '送信に失敗しました。もう一度お試しください。');
+            if (aResult.result !== 'success') {
+                throw new Error(aResult.message || '送信に失敗しました。もう一度お試しください。');
             }
         }
     </script>
