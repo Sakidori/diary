@@ -454,7 +454,7 @@
             submitBtn.disabled = false;
         }
 
-       // --- Submission Logic ---
+        // --- Submission Logic ---
         async function handleSubmission() {
             const name = document.getElementById('studentName').value.trim();
             const year = parseInt(document.getElementById('studentYear').value);
@@ -489,19 +489,25 @@
             const boardFilename = `${targetFolder}_board_${Date.now()}.png`;
 
             try {
-                // 1. COMPRESS & UPLOAD INDIVIDUAL IMAGES
+                // 1. COMPRESS & UPLOAD INDIVIDUAL IMAGES IN PARALLEL
                 const polaroids = document.querySelectorAll('.polaroid');
+                const uploadPromises = [];
+
                 for (let i = 0; i < polaroids.length; i++) {
                     const fileInput = polaroids[i].querySelector('.file-input');
                     const file = fileInput.files[0];
                     if (file) {
-                        // Compress image to max 1000px resolution to speed up transfer
-                        const base64Individual = await compressImage(file, 1000, 1000);
-                        const ext = file.name.split('.').pop() || 'png';
-                        const indFilename = `${targetFolder}_photo_${i + 1}_${Date.now()}.${ext}`;
-                        await uploadToDrive(indFilename, base64Individual, 'image/jpeg', targetFolder);
+                        const promise = (async () => {
+                            const base64Individual = await compressImage(file, 800, 800); 
+                            const ext = file.name.split('.').pop() || 'png';
+                            const indFilename = `${targetFolder}_photo_${i + 1}_${Date.now()}.${ext}`;
+                            await uploadToDrive(indFilename, base64Individual, 'image/jpeg', targetFolder);
+                        })();
+                        uploadPromises.push(promise);
                     }
                 }
+                // Fire all individual image uploads concurrently
+                await Promise.all(uploadPromises);
 
                 // 2. SCREENSHOT THE BOARD
                 const board = document.getElementById('board');
@@ -514,7 +520,7 @@
                 modal.classList.remove('active'); 
                 
                 const canvas = await html2canvas(document.body, {
-                    scale: 2,
+                    scale: 1.5,
                     backgroundColor: null
                 });
                 
@@ -522,10 +528,10 @@
                 if (controls) controls.style.display = 'flex';
                 board.classList.remove('exporting');
 
-                const dataUrl = canvas.toDataURL('image/png', 0.8); // Compress canvas slightly
+                const dataUrl = canvas.toDataURL('image/png', 0.8);
                 const base64Board = dataUrl.split(',')[1]; 
 
-                // 3. COMPRESS & UPLOAD BOARD SCREENSHOT
+                // 3. UPLOAD BOARD SCREENSHOT
                 await uploadToDrive(boardFilename, base64Board, 'image/png', targetFolder);
                 
                 alert("成功！個々の写真とボードが送信されました。");
@@ -546,7 +552,7 @@
             }
         }
 
-        // --- Helper: Compress Image via Canvas ---
+        // --- Helper: Compress Image via Canvas (Quality lowered to 0.5) ---
         function compressImage(file, maxWidth, maxHeight) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -576,8 +582,8 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Convert to Base64 (JPEG, Quality: 0.75)
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                        // Convert to Base64 (JPEG, Quality aggressively dropped to 0.5 for massive speed)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
                         resolve(dataUrl.split(',')[1]);
                     };
                     img.onerror = reject;
@@ -588,13 +594,13 @@
 
         // --- Google Drive Upload Function with Folder Support ---
         async function uploadToDrive(filename, base64Data, mimeType, folderName) {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9xNmCI750to62sE6oI-3Z_K_Gss6KEZ7yXaz4VMKBesebIcc0aJ-gqk9pV4gSpKin/exec";
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyb6ICqHNKpzv6zcNSxVTYVyIA7xvq3_w2miTuONTci4yNVEERsz3aLSkU3L0Mkoj9S/exec";
 
             const formData = new FormData();
             formData.append('base64Data', base64Data);
             formData.append('mimeType', mimeType);
             formData.append('filename', filename);
-            formData.append('folderName', folderName); // Pass the intended subfolder name
+            formData.append('folderName', folderName);
 
             const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
