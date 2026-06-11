@@ -179,7 +179,7 @@
             font-size: 15px;
             color: #000;
             user-select: none;
-            
+
             white-space: normal; 
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -367,7 +367,7 @@
             color: #555;
         }
         .cancel-btn:hover { background: #ddd; }
-        
+
         #loading-msg {
             display: none;
             color: #ff7eb3;
@@ -510,7 +510,7 @@
         <div class="modal-content">
             <h2>Who are you?</h2>
             <p style="color: #666; margin-bottom: 20px;">このフォームに記入してください</p>
-            
+
             <div class="form-group">
                 <label for="studentName">名前</label>
                 <input type="text" id="studentName" placeholder="例） 大谷翔平" required>
@@ -564,7 +564,7 @@
                 reader.onload = () => {
                     // Update visible UI with img tag (object-fit cover works fine here)
                     targetZone.innerHTML = `<img src="${reader.result}" alt="Uploaded">`;
-                    
+
                     // Sync file input
                     const fileInput = targetZone.parentElement.querySelector('.file-input');
                     const dataTransfer = new DataTransfer();
@@ -628,7 +628,7 @@
             const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeClass = sClass.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeYear = year.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            
+
             const targetFolder = `${safeYear}-${safeClass}_${safeName}`;
             const boardFilename = `${targetFolder}_board_${Date.now()}.png`;
 
@@ -653,11 +653,12 @@
                 // Fire all individual image uploads concurrently
                 await Promise.all(uploadPromises);
 
-                // 2. RENDER SCREENSHOT FROM HIDDEN OFFSCREEN TEMPLATE
+                // 2. RENDER SCREENSHOT FROM HIDDEN OFFSCREEN TEMPLATE (useCORS added here)
                 const templateElement = document.getElementById('submission-template');
                 const canvas = await html2canvas(templateElement, {
                     scale: 1.5,
-                    backgroundColor: null
+                    backgroundColor: null,
+                    useCORS: true 
                 });
 
                 const dataUrl = canvas.toDataURL('image/png', 0.8);
@@ -665,10 +666,10 @@
 
                 // 3. UPLOAD BOARD SCREENSHOT
                 await uploadToDrive(boardFilename, base64Board, 'image/png', targetFolder);
-                
+
                 alert("成功！ボードが送信されました。");
                 closeModal();
-                
+
             } catch (error) {
                 console.error("Submission error details:", error);
                 alert("送信に失敗しました。エラー内容: " + (error.message || error));
@@ -706,7 +707,7 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
+
                         const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
                         resolve(dataUrl.split(',')[1]);
                     };
@@ -732,7 +733,7 @@
             });
 
             const aResult = await response.json();
-            
+
             if (aResult.result !== 'success') {
                 throw new Error(aResult.message || '送信に失敗しました。もう一度お試しください。');
             }
