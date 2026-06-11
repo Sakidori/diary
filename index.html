@@ -480,9 +480,23 @@
             const safeClass = sClass.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeYear = year.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             
-            const filename = `${safeYear}-${safeClass}_${safeName}_${Date.now()}.png`;
+            const boardFilename = `${safeYear}-${safeClass}_${safeName}_board_${Date.now()}.png`;
 
             try {
+                // 1. UPLOAD INDIVIDUAL IMAGES FIRST
+                const polaroids = document.querySelectorAll('.polaroid');
+                for (let i = 0; i < polaroids.length; i++) {
+                    const fileInput = polaroids[i].querySelector('.file-input');
+                    const file = fileInput.files[0];
+                    if (file) {
+                        const base64Individual = await fileToBase64(file);
+                        const ext = file.name.split('.').pop() || 'png';
+                        const indFilename = `${safeYear}-${safeClass}_${safeName}_photo_${i + 1}_${Date.now()}.${ext}`;
+                        await uploadToDrive(indFilename, base64Individual, file.type);
+                    }
+                }
+
+                // 2. SCREENSHOT THE BOARD
                 const board = document.getElementById('board');
                 board.classList.add('exporting'); 
 
@@ -502,11 +516,12 @@
                 board.classList.remove('exporting');
 
                 const dataUrl = canvas.toDataURL('image/png');
-                const base64Content = dataUrl.split(',')[1]; 
+                const base64Board = dataUrl.split(',')[1]; 
 
-                await uploadToDrive(filename, base64Content, name);
+                // 3. UPLOAD BOARD SCREENSHOT TO DRIVE
+                await uploadToDrive(boardFilename, base64Board, 'image/png');
                 
-                alert("成功！ボードが送信されました。");
+                alert("成功！個々の写真とボードが送信されました。");
                 closeModal();
                 
             } catch (error) {
@@ -524,13 +539,23 @@
             }
         }
 
+        // Helper to convert file to base64 string
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         // --- Google Drive Upload Function ---
-        async function uploadToDrive(filename, base64Image, studentName) {
+        async function uploadToDrive(filename, base64Data, mimeType) {
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyb6ICqHNKpzv6zcNSxVTYVyIA7xvq3_w2miTuONTci4yNVEERsz3aLSkU3L0Mkoj9S/exec";
 
             const formData = new FormData();
-            formData.append('base64Data', base64Image);
-            formData.append('mimeType', 'image/png');
+            formData.append('base64Data', base64Data);
+            formData.append('mimeType', mimeType);
             formData.append('filename', filename);
 
             const response = await fetch(GOOGLE_SCRIPT_URL, {
