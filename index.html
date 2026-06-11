@@ -33,6 +33,17 @@
             z-index: 10;
         }
 
+        /* Container for the exportable area (Title, Emojis, and Board) */
+        #capture-board {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 800px;
+            box-sizing: border-box;
+        }
+
         .emoji-decorations {
             position: absolute;
             top: 0;
@@ -113,7 +124,6 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 25px;
-            max-width: 800px;
             box-sizing: border-box;
             z-index: 1;
         }
@@ -170,14 +180,14 @@
             pointer-events: none;
         }
 
-        /* Empty slot styling during export */
-        .exporting .drop-zone:not(:has(img)) {
+        /* Export states for empty slots */
+        #capture-board.exporting .drop-zone:not(:has(img)) {
             background-color: black !important;
             color: transparent !important;
             border: none;
         }
         
-        .exporting .drop-zone:not(:has(img)) .click-hint {
+        #capture-board.exporting .drop-zone:not(:has(img)) .click-hint {
             display: none;
         }
 
@@ -293,6 +303,10 @@
                 margin-top: 10px;
             }
 
+            #capture-board {
+                width: 100%;
+            }
+
             #board {
                 padding: 15px;
                 gap: 15px;
@@ -331,38 +345,40 @@
 
     <button class="primary-btn top-left-btn" onclick="location.href='gallery.html'">📸 Photo Gallery</button>
 
-    <div class="emoji-decorations">
-        <span class="emoji-palm">🌴</span>
-        <span class="emoji-sun">☀️</span>
-    </div>
+    <div id="capture-board">
+        <div class="emoji-decorations">
+            <span class="emoji-palm">🌴</span>
+            <span class="emoji-sun">☀️</span>
+        </div>
 
-    <h1>My Summer Photo Diary</h1>
+        <h1>My Summer Photo Diary</h1>
 
-    <div id="board">
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">My favorite place</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">My hobby</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">An English word starting with "M"</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">A selfie with a friend outside</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">My favorite animal</div>
+        <div id="board">
+            <div class="polaroid">
+                <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+                <input type="file" class="file-input" accept="image/*" style="display: none;">
+                <div class="title-text">My favorite place</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+                <input type="file" class="file-input" accept="image/*" style="display: none;">
+                <div class="title-text">My hobby</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+                <input type="file" class="file-input" accept="image/*" style="display: none;">
+                <div class="title-text">An English word starting with "M"</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+                <input type="file" class="file-input" accept="image/*" style="display: none;">
+                <div class="title-text">A selfie with a friend outside</div>
+            </div>
+            <div class="polaroid">
+                <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+                <input type="file" class="file-input" accept="image/*" style="display: none;">
+                <div class="title-text">My favorite animal</div>
+            </div>
         </div>
     </div>
 
@@ -509,24 +525,21 @@
                 // Fire all individual image uploads concurrently
                 await Promise.all(uploadPromises);
 
-                // 2. SCREENSHOT THE BOARD
-                const board = document.getElementById('board');
-                board.classList.add('exporting'); 
-
-                const controls = document.querySelector('.controls');
-                if (controls) controls.style.display = 'none';
+                // 2. SCREENSHOT #capture-board (Includes Title, Emojis, and Board)
+                const captureBoard = document.getElementById('capture-board');
+                captureBoard.classList.add('exporting'); 
 
                 const modal = document.getElementById('studentModal');
                 modal.classList.remove('active'); 
                 
-                const canvas = await html2canvas(document.body, {
+                // Screenshot restricted strictly to #capture-board
+                const canvas = await html2canvas(captureBoard, {
                     scale: 1.5,
                     backgroundColor: null
                 });
                 
                 modal.classList.add('active'); 
-                if (controls) controls.style.display = 'flex';
-                board.classList.remove('exporting');
+                captureBoard.classList.remove('exporting');
 
                 const dataUrl = canvas.toDataURL('image/png', 0.8);
                 const base64Board = dataUrl.split(',')[1]; 
@@ -534,16 +547,15 @@
                 // 3. UPLOAD BOARD SCREENSHOT
                 await uploadToDrive(boardFilename, base64Board, 'image/png', targetFolder);
                 
-                alert("成功！個々の写真とボードが送信されました。");
+                alert("成功！ボードが送信されました。");
                 closeModal();
                 
             } catch (error) {
-                const controls = document.querySelector('.controls');
-                if (controls) controls.style.display = 'flex';
+                const captureBoard = document.getElementById('capture-board');
+                if (captureBoard) captureBoard.classList.remove('exporting');
+                
                 const modal = document.getElementById('studentModal');
                 if (modal) modal.classList.add('active');
-                const board = document.getElementById('board');
-                if (board) board.classList.remove('exporting');
                 
                 console.error(error);
                 alert("送信に失敗しました。もう一度お試しください。");
