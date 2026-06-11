@@ -625,11 +625,11 @@
                 alert("成功！ボードが送信されました。");
                 closeModal();
                 
-            } catch (error) {
-                console.error(error);
-                alert("送信に失敗しました。もう一度お試しください。");
-                submitBtn.disabled = false;
-                loadingMsg.style.display = 'none';
+           } catch (error) {
+    console.error("Submission error details:", error);
+    alert("Mobile Error: " + (error.message || error));
+    submitBtn.disabled = false;
+    loadingMsg.style.display = 'none';
             }
         }
 
