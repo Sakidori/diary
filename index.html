@@ -427,7 +427,15 @@
         function processImageUpload(file, targetZone) {
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = () => targetZone.innerHTML = `<img src="${reader.result}" alt="Uploaded">`;
+                reader.onload = () => {
+                    targetZone.innerHTML = `<img src="${reader.result}" alt="Uploaded">`;
+                    
+                    // Attach the file to the hidden input so it can be found during submission
+                    const fileInput = targetZone.parentElement.querySelector('.file-input');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+                };
                 reader.readAsDataURL(file);
             } else {
                 alert('有効な画像ファイルをドラッグ＆ドロップまたは選択してください。');
@@ -521,7 +529,7 @@
                 // 3. UPLOAD BOARD SCREENSHOT TO DRIVE
                 await uploadToDrive(boardFilename, base64Board, 'image/png');
                 
-                alert("成功！個々の写真とボードが送信されました。");
+                alert("成功！ボードが送信されました。");
                 closeModal();
                 
             } catch (error) {
