@@ -244,8 +244,8 @@
             }
         }
 
-        // Real-time synchronization of gallery
-        db.collection("summerPictures").orderBy("timestamp", "desc")
+        // Real-time synchronization of gallery - Ordered by likes descending
+        db.collection("summerPictures").orderBy("likes", "desc")
             .onSnapshot((snapshot) => {
                 const grid = document.getElementById('gallery-grid');
                 document.getElementById('loading-gal').style.display = 'none';
