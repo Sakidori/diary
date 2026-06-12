@@ -27,7 +27,7 @@
             height: 100vh;
             box-sizing: border-box;
             position: relative;
-            overflow: hidden; /* Prevents any scrolling */
+            overflow: hidden;
         }
 
         .top-left-btn {
@@ -108,33 +108,35 @@
             transform: none !important;
         }
 
-        /* Board sized specifically to hold exactly 3 items on top, 2 on bottom */
+        /* Explicitly locked 3-column Grid layout */
         #board {
-    background-color: rgba(255, 255, 255, 0.85);
-    background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    width: 550px; /* Locked width: (170px * 3) + (20px * 2 gaps) = 550px exactly */
-    max-width: 100%;
-    box-sizing: border-box;
-    z-index: 1;
-}
+            background-color: rgba(255, 255, 255, 0.85);
+            background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            
+            display: grid;
+            grid-template-columns: repeat(3, 170px);
+            gap: 20px;
+            justify-content: center;
+            
+            max-width: 600px;
+            box-sizing: border-box;
+            z-index: 1;
+        }
 
         .polaroid {
             background: white;
             padding: 8px 8px 12px 8px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 170px; /* Forces 3 per row (170*3 + 20*2 = 590px, fits in 620px max-width) */
+            width: 100%;
             display: flex;
             flex-direction: column;
             transition: transform 0.2s;
+            box-sizing: border-box;
         }
 
         .polaroid:nth-child(even) { transform: rotate(2deg); }
