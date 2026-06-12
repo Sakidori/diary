@@ -21,22 +21,20 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 10px;
             margin: 0;
             width: 100vw;
             height: 100vh;
             box-sizing: border-box;
-            position: relative;
             overflow: hidden;
+            position: relative;
         }
 
         .top-left-btn {
-            position: fixed;
+            position: absolute;
             top: 20px;
             left: 20px;
             z-index: 10;
-            padding: 10px 20px;
-            font-size: 14px;
         }
 
         .emoji-decorations {
@@ -54,7 +52,7 @@
             position: absolute;
             top: 80%;
             left: -20px;
-            width: 320px;
+            width: 350px;
             height: auto;
             opacity: 0.15;
             transform: translateY(-50%);
@@ -62,9 +60,9 @@
 
         .emoji-sun {
             position: absolute;
-            top: 12%;
+            top: 15%;
             right: 2%;
-            width: 100px;
+            width: 120px;
             height: auto;
             opacity: 0.2;
         }
@@ -81,11 +79,12 @@
         .controls {
             margin-top: 20px;
             display: flex;
+            gap: 15px;
             z-index: 1;
         }
 
         button.primary-btn {
-            padding: 12px 32px;
+            padding: 10px 25px;
             font-size: 16px;
             font-weight: bold;
             color: white;
@@ -108,44 +107,39 @@
             transform: none !important;
         }
 
-        /* Explicitly locked 3-column Grid layout */
         #board {
-    background-color: rgba(255, 255, 255, 0.85);
-    background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    
-    width: 550px; /* Exactly fits 3 items: (170px * 3) + (20px * 2 gaps) = 510px */
-    max-width: 100%;
-    box-sizing: border-box;
-    z-index: 1;
-}
+            background-color: rgba(255, 255, 255, 0.85);
+            background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            max-width: 800px;
+            box-sizing: border-box;
+            z-index: 1;
+        }
 
         .polaroid {
             background: white;
-            padding: 8px 8px 12px 8px;
+            padding: 12px 12px 20px 12px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 100%;
+            width: 170px;
             display: flex;
             flex-direction: column;
             transition: transform 0.2s;
-            box-sizing: border-box;
         }
 
-        .polaroid:nth-child(even) { transform: rotate(2deg); }
-        .polaroid:nth-child(odd) { transform: rotate(-2deg); }
+        .polaroid:nth-child(even) { transform: rotate(3deg); }
+        .polaroid:nth-child(odd) { transform: rotate(-3deg); }
 
         .drop-zone {
             width: 100%;
-            height: 130px;
+            height: 150px;
             background-color: #f8f9fa;
             border: 2px dashed #ced4da;
             display: flex;
@@ -153,7 +147,7 @@
             align-items: center;
             justify-content: center;
             color: #6c757d;
-            font-size: 12px;
+            font-size: 13px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -162,7 +156,7 @@
         }
 
         .drop-zone .click-hint {
-            font-size: 10px;
+            font-size: 11px;
             color: #888;
             margin-top: 4px;
             text-decoration: underline;
@@ -183,22 +177,22 @@
         }
 
         .title-text {
-            margin-top: 8px;
+            margin-top: 12px;
             text-align: center;
             font-family: 'Comic Neue', cursive;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 16px;
             color: #000;
             user-select: none;
             white-space: normal; 
             word-wrap: break-word;
             overflow-wrap: break-word;
-            line-height: 1.1;
-            max-height: 2.2em;
+            line-height: 1.2;
+            max-height: 2.4em;
             overflow: hidden;
         }
 
-        /* --- Rigid Staging Template (Isolated strictly for html2canvas rendering) --- */
+        /* --- Reliably Hidden Submission Template (Safe Off-Screen) --- */
         #submission-template {
             position: absolute;
             top: -9999px;
@@ -312,7 +306,6 @@
             overflow: hidden;
         }
 
-        /* --- Modal Overlay --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -328,48 +321,47 @@
 
         .modal-content {
             background: white;
-            padding: 25px;
+            padding: 30px;
             border-radius: 15px;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             text-align: center;
             box-sizing: border-box;
         }
 
-        .modal-content h2 { margin-top: 0; color: #333; font-size: 20px; }
+        .modal-content h2 { margin-top: 0; color: #333; }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             font-weight: bold;
             color: #555;
-            font-size: 13px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 2px solid #eee;
             border-radius: 8px;
             box-sizing: border-box;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         .modal-actions {
-            margin-top: 20px;
+            margin-top: 25px;
             display: flex;
             gap: 10px;
             justify-content: space-between;
         }
 
         .cancel-btn {
-            padding: 8px 16px;
+            padding: 10px 20px;
             background: #eee;
             border: none;
             border-radius: 50px;
@@ -379,17 +371,68 @@
         }
         .cancel-btn:hover { background: #ddd; }
 
-        button.primary-btn {
-            padding: 8px 20px;
-            font-size: 14px;
-        }
-
         #loading-msg {
             display: none;
             color: #ff7eb3;
             font-weight: bold;
-            margin-top: 12px;
-            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                justify-content: flex-start;
+                padding: 20px 10px;
+            }
+
+            button.primary-btn.top-left-btn {
+                position: static;
+                margin-bottom: 20px;
+                width: 90%;
+            }
+
+            .controls {
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+                margin-top: 10px;
+            }
+
+            #board {
+                padding: 15px;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .polaroid {
+                width: 140px;
+                padding: 10px 10px 15px 10px;
+            }
+
+            .drop-zone {
+                height: 120px;
+                font-size: 11px;
+            }
+
+            .title-text {
+                font-size: 13px;
+            }
+
+            .emoji-palm {
+                width: 250px;
+                left: -40px;
+                top: 80%;
+            }
+
+            .emoji-sun {
+                width: 80px;
+                top: 10%;
+                right: 2%;
+            }
         }
     </style>
 </head>
@@ -469,7 +512,7 @@
     <div class="modal-overlay" id="studentModal">
         <div class="modal-content">
             <h2>Who are you?</h2>
-            <p style="color: #666; margin-bottom: 15px; font-size: 13px;">このフォームに記入してください</p>
+            <p style="color: #666; margin-bottom: 20px;">このフォームに記入してください</p>
 
             <div class="form-group">
                 <label for="studentName">名前</label>
@@ -554,6 +597,7 @@
         }
 
         async function handleSubmission() {
+            // Ensures font is fully loaded and painted before rendering off-screen canvas
             await document.fonts.ready;
 
             const name = document.getElementById('studentName').value.trim();
