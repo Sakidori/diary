@@ -67,17 +67,18 @@
             opacity: 0.2;
         }
 
-        /* Unified main title image styling */
+        /* Enforced larger main title image sizing */
         .main-title {
             margin: 0 0 15px 0;
-            height: 60px; /* Adjust height to match your title.png proportions */
+            height: 90px; 
             width: auto;
             object-fit: contain;
             z-index: 1;
         }
 
+        /* Moved up closer to the board */
         .controls {
-            margin-top: 20px;
+            margin-top: 10px;
             display: flex;
             gap: 15px;
             z-index: 1;
@@ -238,9 +239,10 @@
             opacity: 0.2;
         }
 
+        /* Scaled up title for canvas printout */
         #submission-template img.main-title {
             margin: 0 0 15px 0;
-            height: 80px; /* Scale up slightly for the 1024x768 canvas render */
+            height: 120px; 
             width: auto;
             object-fit: contain;
             z-index: 1;
@@ -397,7 +399,7 @@
             }
 
             .main-title {
-                height: 45px;
+                height: 60px; /* Scaled up for mobile view */
                 margin-top: 10px;
             }
 
