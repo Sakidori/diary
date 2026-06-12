@@ -110,23 +110,24 @@
 
         /* Explicitly locked 3-column Grid layout */
         #board {
-            background-color: rgba(255, 255, 255, 0.85);
-            background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            
-            display: grid;
-            grid-template-columns: repeat(3, 170px);
-            gap: 20px;
-            justify-content: center;
-            
-            max-width: 600px;
-            box-sizing: border-box;
-            z-index: 1;
-        }
+    background-color: rgba(255, 255, 255, 0.85);
+    background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    
+    width: 550px; /* Exactly fits 3 items: (170px * 3) + (20px * 2 gaps) = 510px */
+    max-width: 100%;
+    box-sizing: border-box;
+    z-index: 1;
+}
 
         .polaroid {
             background: white;
