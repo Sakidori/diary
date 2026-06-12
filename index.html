@@ -22,7 +22,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 80px 20px 40px 20px; /* Padding top gives breathing room for the absolute button */
+            padding: 80px 20px 40px 20px;
             margin: 0;
             min-height: 100vh;
             box-sizing: border-box;
@@ -379,9 +379,55 @@
             margin-top: 15px;
         }
 
+        /* --- Responsive adjust for standard desktops / larger screens --- */
         @media (max-width: 768px) {
             h1 { font-size: 28px; }
             .top-left-btn { padding: 8px 16px; font-size: 12px; }
+        }
+
+        /* --- Screen Height Constraint Adjustments --- */
+        @media (max-height: 850px) {
+            body {
+                padding: 60px 10px 20px 10px;
+                justify-content: flex-start;
+            }
+            h1 {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+            #board {
+                padding: 15px;
+                gap: 15px;
+            }
+            .polaroid {
+                width: 140px;
+                padding: 8px 8px 12px 8px;
+            }
+            .drop-zone {
+                height: 120px;
+                font-size: 11px;
+            }
+            .title-text {
+                font-size: 14px;
+                margin-top: 8px;
+            }
+            .controls {
+                margin-top: 15px;
+            }
+            button.primary-btn {
+                padding: 10px 25px;
+                font-size: 16px;
+            }
+            .emoji-palm {
+                width: 250px;
+                left: -30px;
+                top: 85%;
+            }
+            .emoji-sun {
+                width: 80px;
+                top: 10%;
+                right: 2%;
+            }
         }
     </style>
 </head>
