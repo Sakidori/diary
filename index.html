@@ -20,13 +20,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 10px 10px 30px 10px; /* Added bottom padding to prevent cut-off */
+            justify-content: flex-start; /* Align to top to give more room */
+            padding: 10px;
             margin: 0;
             width: 100vw;
-            min-height: 100vh;
+            height: 100vh; /* Strict single screen height */
             box-sizing: border-box;
-            overflow-y: auto; /* Allow scrolling if content exceeds height */
+            overflow: hidden; /* Prevent scrolling entirely */
             position: relative;
         }
 
@@ -69,16 +69,17 @@
 
         /* Larger main title image sizing */
         .main-title {
-            margin: 10px 0 15px 0;
+            margin: 5px 0 10px 0; /* Tightened margins */
             height: 90px; 
             width: auto;
             object-fit: contain;
             z-index: 1;
         }
 
-        /* Shifted closer to the board */
+        /* Shifted closer to the title and board */
         .controls {
-            margin-top: 15px;
+            margin-top: 10px;
+            margin-bottom: 0;
             display: flex;
             gap: 15px;
             z-index: 1;
@@ -113,7 +114,7 @@
             background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
             background-size: 20px 20px;
             backdrop-filter: blur(10px);
-            padding: 20px; /* Reduced padding to save vertical space */
+            padding: 15px; /* Reduced padding to shift elements up */
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             display: flex;
@@ -127,9 +128,9 @@
 
         .polaroid {
             background: white;
-            padding: 12px 12px 20px 12px;
+            padding: 10px 10px 15px 10px; /* Tightened polaroid padding */
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 170px;
+            width: 160px; /* Slightly smaller to fit securely */
             display: flex;
             flex-direction: column;
             transition: transform 0.2s;
@@ -140,7 +141,7 @@
 
         .drop-zone {
             width: 100%;
-            height: 150px;
+            height: 130px; /* Reduced height to keep board compact */
             background-color: #f8f9fa;
             border: 2px dashed #ced4da;
             display: flex;
@@ -178,11 +179,11 @@
         }
 
         .title-text {
-            margin-top: 12px;
+            margin-top: 10px;
             text-align: center;
             font-family: 'Comic Neue', cursive;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             color: #000;
             user-select: none;
             white-space: normal; 
@@ -381,46 +382,48 @@
         /* Phone / Mobile specific overrides */
         @media (max-width: 768px) {
             body {
-                height: auto;
-                min-height: 100vh;
-                overflow-y: auto;
                 justify-content: flex-start;
-                padding: 10px 10px 30px 10px;
+                padding: 10px;
+                height: 100vh;
+                overflow: hidden;
             }
 
             button.primary-btn.top-left-btn {
                 position: static;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
                 width: 90%;
             }
 
             .controls {
-                margin-bottom: 15px;
+                margin-top: 10px;
+                margin-bottom: 0;
             }
 
             .main-title {
-                height: 60px;
-                margin-top: 10px;
+                height: 55px; /* Slightly smaller to guarantee fit on mobile */
+                margin-top: 5px;
+                margin-bottom: 10px;
             }
 
             #board {
-                padding: 15px;
-                gap: 12px;
+                padding: 10px;
+                gap: 8px;
                 width: 100%;
             }
 
             .polaroid {
-                width: 140px;
-                padding: 10px 10px 15px 10px;
+                width: 135px;
+                padding: 8px 8px 12px 8px;
             }
 
             .drop-zone {
-                height: 120px;
+                height: 105px;
                 font-size: 11px;
             }
 
             .title-text {
-                font-size: 13px;
+                font-size: 12px;
+                margin-top: 8px;
             }
 
             .emoji-palm {
