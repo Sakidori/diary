@@ -67,7 +67,8 @@
             opacity: 0.2;
         }
 
-        h1 {
+        /* Unified main title styling */
+        .main-title {
             margin: 0 0 15px 0;
             font-size: 32px;
             color: #333;
@@ -378,6 +379,7 @@
             margin-top: 15px;
         }
 
+        /* Phone / Mobile specific overrides */
         @media (max-width: 768px) {
             body {
                 height: auto;
@@ -397,7 +399,8 @@
                 margin-bottom: 20px;
             }
 
-            h1 {
+            /* Adjust title size for mobile */
+            .main-title {
                 font-size: 26px;
                 margin-top: 10px;
             }
@@ -445,7 +448,7 @@
         <img src="https://cdn-icons-png.flaticon.com/512/10484/10484062.png" class="emoji-sun" alt="Sun">
     </div>
 
-    <h1>My Summer Photo Diary</h1>
+    <h1 class="main-title">My Summer Photo Diary</h1>
 
     <div id="board">
         <div class="polaroid">
@@ -597,7 +600,6 @@
         }
 
         async function handleSubmission() {
-            // Ensures font is fully loaded and painted before rendering off-screen canvas
             await document.fonts.ready;
 
             const name = document.getElementById('studentName').value.trim();
