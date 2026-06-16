@@ -370,7 +370,7 @@
             margin-top: 15px;
         }
 
-        /* Phone / Mobile specific overrides */
+/* Phone / Mobile specific overrides */
         @media (max-width: 768px) {
             body {
                 height: auto;
@@ -396,16 +396,20 @@
                 margin-bottom: 10px;
             }
 
+            /* UPDATED SECTION BELOW */
             #board {
                 padding: 15px;
                 gap: 15px;
-                width: 100%;
+                width: 100%;             /* Use full width available */
+                justify-content: center; /* Forces alignment to center on mobile */
             }
 
             .polaroid {
                 width: 140px;
                 padding: 10px 10px 15px 10px;
+                margin: 0 auto;         /* Ensures individual polaroids stay centered */
             }
+            /* END OF UPDATED SECTION */
 
             .drop-zone {
                 height: 120px;
