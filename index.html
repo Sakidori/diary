@@ -6,11 +6,15 @@
     <title>My Summer Photo Diary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=FComic+Neue:wght@400;700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body {
+        html, body {
+            overflow-x: hidden; /* This stops the page from scrolling sideways */
+            width: 100%;
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
             background-attachment: fixed;
@@ -398,15 +402,14 @@
 
             /* UPDATED SECTION BELOW */
 #board {
-                padding: 15px !important;
-                gap: 15px !important;
-                width: 100% !important;
-                display: flex !important;
-                flex-wrap: wrap !important;
-                justify-content: center !important; /* Force center alignment */
-                align-items: center !important;
-                margin: 0 auto !important;         /* Center the container */
-            }
+        width: 90% !important; /* Slightly smaller than 100% to ensure no overflow */
+        max-width: 400px !important;
+        margin: 0 auto !important;
+        padding: 10px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
 
             .polaroid {
                 width: 140px !important;
