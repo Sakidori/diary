@@ -397,17 +397,24 @@
             }
 
             /* UPDATED SECTION BELOW */
-            #board {
+#board {
                 padding: 15px;
                 gap: 15px;
-                width: 100%;             /* Use full width available */
-                justify-content: center; /* Forces alignment to center on mobile */
+                width: 100%;             
+                display: flex;
+                flex-wrap: wrap;
+                /* This forces center alignment even if items don't fill the row */
+                justify-content: center; 
+                align-items: center;
+                margin: 0; 
+                box-sizing: border-box;
             }
 
             .polaroid {
                 width: 140px;
                 padding: 10px 10px 15px 10px;
-                margin: 0 auto;         /* Ensures individual polaroids stay centered */
+                /* Removing auto margins to let justify-content take over */
+                margin: 0; 
             }
             /* END OF UPDATED SECTION */
 
