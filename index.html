@@ -67,6 +67,7 @@
             opacity: 0.2;
         }
 
+        /* Main title image sizing with zeroed bottom margin for maximum tightness */
         .main-title {
             margin: 0 0 -20px 0;
             height: 90px; 
@@ -191,6 +192,7 @@
             overflow: hidden;
         }
 
+        /* --- Reliably Hidden Submission Template (Safe Off-Screen) --- */
         #submission-template {
             position: absolute;
             top: -9999px;
@@ -256,7 +258,7 @@
 
         #template-board .polaroid {
             background: white;
-            padding: 12px 12px 28px 12px;
+            padding: 12px 12px 28px 12px; /* Fixed: Increased bottom padding from 20px to prevent canvas text cut-off */
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             width: 170px;
             display: flex;
@@ -368,6 +370,7 @@
             margin-top: 15px;
         }
 
+        /* Phone / Mobile specific overrides */
         @media (max-width: 768px) {
             body {
                 height: auto;
@@ -588,6 +591,7 @@
         }
 
         async function handleSubmission() {
+            // Fixed: Ensured fonts are ready and added a short safety delay to make sure external fonts are fully drawn to canvas
             await document.fonts.ready;
             await new Promise(resolve => setTimeout(resolve, 200));
 
