@@ -447,33 +447,33 @@
 
     <img src="title.png" class="main-title" alt="My Summer Photo Diary">
 
-    <div id="board">
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">My favorite place</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">My hobby</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">An English word starting with "M"</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">The best snack</div>
-        </div>
-        <div class="polaroid">
-            <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
-            <input type="file" class="file-input" accept="image/*" style="display: none;">
-            <div class="title-text">My favorite animal</div>
-        </div>
+<div id="board">
+    <div class="polaroid">
+        <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+        <input type="file" class="file-input" accept="image/*" style="display: none;">
+        <div class="title-text" id="title1">My favorite place</div>
     </div>
+    <div class="polaroid">
+        <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+        <input type="file" class="file-input" accept="image/*" style="display: none;">
+        <div class="title-text" id="title2">My hobby</div>
+    </div>
+    <div class="polaroid">
+        <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+        <input type="file" class="file-input" accept="image/*" style="display: none;">
+        <div class="title-text" id="title3">An English word starting with "M"</div>
+    </div>
+    <div class="polaroid">
+        <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+        <input type="file" class="file-input" accept="image/*" style="display: none;">
+        <div class="title-text" id="title4">The best snack</div>
+    </div>
+    <div class="polaroid">
+        <div class="drop-zone">ここに画像を<br>ドラッグ＆ドロップ<div class="click-hint">またはクリックして選択</div></div>
+        <input type="file" class="file-input" accept="image/*" style="display: none;">
+        <div class="title-text" id="title5">My favorite animal</div>
+    </div>
+</div>
 
     <div class="controls">
         <button class="primary-btn" onclick="openModal()">課題を提出する</button>
@@ -537,6 +537,24 @@
     </div>
 
     <script>
+
+        // Initialize Firebase
+const firebaseConfig = { 
+    apiKey: "AIzaSyBxk_492uH0vJLr-iijocmRHjnvx9eLXY4", 
+    projectId: "summer-diary-8e0b6", 
+    storageBucket: "summer-diary-8e0b6.firebasestorage.app" 
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Real-time listener: this automatically updates the UI when you change the database
+for(let i = 1; i <= 5; i++) {
+    db.collection("settings").doc("title" + i).onSnapshot(doc => {
+        if(doc.exists) {
+            document.getElementById("title" + i).innerText = doc.data().text;
+        }
+    });
+}
         const dropZones = document.querySelectorAll('#board .drop-zone');
         dropZones.forEach((zone, index) => {
             const fileInput = zone.parentElement.querySelector('.file-input');
