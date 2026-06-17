@@ -45,32 +45,35 @@
     const db = firebase.firestore(); 
 
     async function loadAdminTools() {
-    console.log("Attempting to load data...");
     const container = document.getElementById('admin-container');
     container.innerHTML = "";
     
+    // 1. Build the UI
     for (let i = 1; i <= 5; i++) {
         container.innerHTML += `
             <div class="admin-card">
                 Title ${i}: <input type="text" id="input${i}" placeholder="Loading...">
                 <button onclick="updateTitle(${i})">Update</button>
             </div>`;
-        
-        try {
-            console.log("Fetching: title" + i); // Will this print?
-            const docRef = db.collection("settings").doc("title" + i);
-            const doc = await docRef.get();
-            console.log("Fetched: title" + i); // Will this print?
-            
-            if (doc.exists) {
-                document.getElementById('input' + i).value = doc.data().text;
-            } else {
-                document.getElementById('input' + i).placeholder = "Empty";
-            }
-        } catch (e) {
-            console.error("CRITICAL ERROR on " + i, e);
-        }
     }
+
+    // 2. Give the browser a split second to render the HTML before filling it
+    setTimeout(async () => {
+        const db = firebase.firestore();
+        for (let i = 1; i <= 5; i++) {
+            try {
+                const doc = await db.collection("settings").doc("title" + i).get();
+                if (doc.exists) {
+                    const el = document.getElementById('input' + i);
+                    if (el) {
+                        el.value = doc.data().text;
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading " + i, e);
+            }
+        }
+    }, 100); // 100ms delay is usually enough
 }
         
         async function login() {
