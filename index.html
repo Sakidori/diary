@@ -542,9 +542,9 @@
 
         // Initialize Firebase
 const firebaseConfig = { 
-    apiKey: "AIzaSyBxk_492uH0vJLr-iijocmRHjnvx9eLXY4", 
-    projectId: "summer-diary-8e0b6", 
-    storageBucket: "summer-diary-8e0b6.firebasestorage.app" 
+    apiKey: "AIzaSyC4epDF_XFTi3MEuJHgrzbE7gVCFZ3piM0", 
+    projectId: "summer-diary-2", 
+    storageBucket: "summer-diary-2.firebasestorage.app" 
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -734,7 +734,7 @@ for(let i = 1; i <= 5; i++) {
         }
 
         async function uploadToDrive(filename, base64Data, mimeType, folderName) {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwud9oq-PgKx7Ubh6yw-mQsbVAiu-F6B3x8W2zv51I__yCMlsm_rgWFckHQA_dKv70W/exec";
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzst3HLW98_CA9JXidoKRqb-qmAoin5WFlyajPFwVNNUhswJSvmP2sdNRcVQVwbUVBQ/exec";
 
             const formData = new FormData();
             formData.append('base64Data', base64Data);
