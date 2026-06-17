@@ -646,6 +646,17 @@ for(let i = 1; i <= 5; i++) {
             submitBtn.disabled = true;
             loadingMsg.style.display = 'block';
 
+            // ... inside handleSubmission() ...
+
+// 1. Sync the text from the live board to the submission template
+for (let i = 1; i <= 5; i++) {
+    const liveTitle = document.getElementById("title" + i).innerText;
+    const templateTitles = document.querySelectorAll('#submission-template .title-text');
+    if (templateTitles[i - 1]) {
+        templateTitles[i - 1].innerText = liveTitle;
+    }
+}
+
             const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeClass = sClass.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const safeYear = year.toString().replace(/[^a-z0-9]/gi, '_').toLowerCase();
