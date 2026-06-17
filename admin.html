@@ -2,58 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>Diary Admin Panel</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(120deg, #fbc531 0%, #e84118 100%); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .box { background: rgba(0,0,0,0.5); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px); width: 300px; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; cursor: pointer; background: #4cd137; border: none; color: white; font-weight: bold; border-radius: 5px; }
-        #admin-content { display: none; }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .admin-card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
+        input { padding: 8px; flex-grow: 1; }
+        button { padding: 8px 15px; cursor: pointer; background: #ff7eb3; color: white; border: none; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="login-box" class="box">
-        <h2>Admin Access</h2>
-        <input type="password" id="passInput" placeholder="Enter Password">
-        <button onclick="checkPass()">Login</button>
-    </div>
-
-    <div id="admin-content" class="box">
-        <h1>Edit Prompts</h1>
-        <input type="text" id="t1" placeholder="Prompt 1">
-        <input type="text" id="t2" placeholder="Prompt 2">
-        <input type="text" id="t3" placeholder="Prompt 3">
-        <input type="text" id="t4" placeholder="Prompt 4">
-        <input type="text" id="t5" placeholder="Prompt 5">
-        <button onclick="saveTitles()">Update Titles</button>
-        <br><br>
-        <a href="index.html" style="color:white;">Back to Diary</a>
-    </div>
+    <h1>Admin Panel</h1>
+    <div id="admin-container"></div>
 
     <script>
-        const firebaseConfig = { /* USE YOUR EXISTING CONFIG */ };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBxk_492uH0vJLr-iijocmRHjnvx9eLXY4", 
+            projectId: "summer-diary-8e0b6", 
+            storageBucket: "summer-diary-8e0b6.firebasestorage.app" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        function checkPass() {
-            if (document.getElementById('passInput').value === "Sowhat") {
-                document.getElementById('login-box').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
-            } else { alert("Wrong password!"); }
+        // Create UI for 5 titles
+        const container = document.getElementById('admin-container');
+        for (let i = 1; i <= 5; i++) {
+            container.innerHTML += `
+                <div class="admin-card">
+                    <label>Title ${i}:</label>
+                    <input type="text" id="input${i}" placeholder="Enter new title...">
+                    <button onclick="updateTitle(${i})">Update</button>
+                </div>
+            `;
         }
 
-        async function saveTitles() {
-            const batch = db.batch();
-            for(let i=1; i<=5; i++) {
-                const val = document.getElementById('t'+i).value;
-                const ref = db.collection("settings").doc("title"+i);
-                batch.set(ref, { text: val });
+        // The logic to push to Firebase
+        async function updateTitle(idNumber) {
+            const newText = document.getElementById('input' + idNumber).value;
+            if (!newText) return alert("Please enter text");
+
+            try {
+                await db.collection("settings").doc("title" + idNumber).set({
+                    text: newText
+                });
+                alert("Updated Title " + idNumber + "!");
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Update failed. Check console.");
             }
-            await batch.commit();
-            alert("Titles updated!");
         }
     </script>
 </body>
