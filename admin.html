@@ -8,7 +8,7 @@
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
         .admin-card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
-        input { padding: 8px; flex-grow: 1; }
+        input { padding: 8px; flex-grow: 1; border: 1px solid #ccc; border-radius: 4px; }
         button { padding: 8px 15px; cursor: pointer; background: #ff7eb3; color: white; border: none; border-radius: 5px; }
     </style>
 </head>
@@ -26,19 +26,27 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Create UI for 5 titles
         const container = document.getElementById('admin-container');
+        
+        // 1. Create the UI and Load current data
         for (let i = 1; i <= 5; i++) {
             container.innerHTML += `
                 <div class="admin-card">
                     <label>Title ${i}:</label>
-                    <input type="text" id="input${i}" placeholder="Enter new title...">
+                    <input type="text" id="input${i}" placeholder="Loading...">
                     <button onclick="updateTitle(${i})">Update</button>
                 </div>
             `;
+            
+            // Fetch current value to show in the input box
+            db.collection("settings").doc("title" + i).get().then(doc => {
+                if (doc.exists) {
+                    document.getElementById('input' + i).value = doc.data().text;
+                }
+            });
         }
 
-        // The logic to push to Firebase
+        // 2. Logic to push to Firebase
         async function updateTitle(idNumber) {
             const newText = document.getElementById('input' + idNumber).value;
             if (!newText) return alert("Please enter text");
