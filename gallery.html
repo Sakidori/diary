@@ -24,7 +24,7 @@
         }
 
         /* --- Emoji Background --- */
-        .emoji-decorations {
+      .emoji-decorations {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -32,18 +32,25 @@
             z-index: -1;
             overflow: hidden;
         }
+
         .emoji-palm {
             position: absolute;
-            top: 80%; left: -20px;
-            width: 350px; height: auto;
+            top: 80%; 
+            right: -20px; /* Moved to right */
+            width: 350px; 
+            height: auto;
             opacity: 0.15;
-            transform: translateY(-50%);
+            transform: translateY(-50%) scaleX(-1); /* Flipped on Y-axis (mirrored) */
         }
+
         .emoji-sun {
             position: absolute;
-            top: 15%; right: 2%;
-            width: 120px; height: auto;
+            top: 15%; 
+            left: 2%; /* Moved to left */
+            width: 120px; 
+            height: auto;
             opacity: 0.2;
+            transform: scaleX(-1); /* Flipped on Y-axis (mirrored) */
         }
 
         h1 { text-align: center; text-shadow: 0 2px 5px rgba(0,0,0,0.3); margin-bottom: 20px; }
