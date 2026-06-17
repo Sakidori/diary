@@ -61,16 +61,30 @@
             }
         });
 
-        function loadAdminTools() {
+async function loadAdminTools() {
             const db = firebase.firestore();
             const container = document.getElementById('admin-container');
             container.innerHTML = "";
+            
             for (let i = 1; i <= 5; i++) {
+                // Add the card to the UI first
                 container.innerHTML += `
                     <div class="admin-card">
-                        Title ${i}: <input type="text" id="input${i}">
+                        Title ${i}: <input type="text" id="input${i}" placeholder="Loading...">
                         <button onclick="updateTitle(${i})">Update</button>
                     </div>`;
+                
+                // Fetch the current title from Firestore and set it to the input field
+                try {
+                    const doc = await db.collection("settings").doc("title" + i).get();
+                    if (doc.exists) {
+                        document.getElementById('input' + i).value = doc.data().text;
+                    } else {
+                        document.getElementById('input' + i).placeholder = "No title set";
+                    }
+                } catch (e) {
+                    console.error("Error loading title " + i, e);
+                }
             }
         }
 
