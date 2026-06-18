@@ -97,7 +97,7 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        // 1. Auth Listener: Updates UI based on login state
+        // 1. Auth Listener: Updates UI
         auth.onAuthStateChanged((user) => {
             const adminPanel = document.getElementById('adminPanel');
             const authBtn = document.getElementById('authBtn');
@@ -112,7 +112,7 @@
             }
         });
 
-        // 2. Auth Toggle Function (Replaces legacy passcode)
+        // 2. Global Functions (Defined outside for onclick access)
         async function toggleAuth() {
             if (auth.currentUser) {
                 await auth.signOut();
@@ -128,7 +128,42 @@
             }
         }
 
-        // 3. Render Gallery
+        async function uploadImage() {
+            const file = document.getElementById('imageFile').files[0];
+            if (!file) return alert('Select an image.');
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('loading-txt').style.display = 'block';
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                await db.collection("summerPictures").add({
+                    src: e.target.result,
+                    title: document.getElementById('imageTitle').value || 'Untitled',
+                    likes: 0
+                });
+                location.reload();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function likeItem(docId, currentLikes) {
+            let likedPhotos = JSON.parse(localStorage.getItem('likedPhotos')) || [];
+            if (likedPhotos.includes(docId)) {
+                alert("あなたは既にこの写真に「いいね！」をしました！");
+                return;
+            }
+            try {
+                await db.collection("summerPictures").doc(docId).update({ likes: currentLikes + 1 });
+                likedPhotos.push(docId);
+                localStorage.setItem('likedPhotos', JSON.stringify(likedPhotos));
+            } catch (err) { alert("いいね！の送信に失敗しました。"); }
+        }
+
+        async function deletePhoto(id) {
+            if (confirm("Delete this?")) await db.collection("summerPictures").doc(id).delete();
+        }
+
+        // 3. Gallery Renderer
         db.collection("summerPictures").orderBy("likes", "desc").onSnapshot((snapshot) => {
             const grid = document.getElementById('gallery-grid');
             document.getElementById('loading-gal').style.display = 'none';
@@ -151,52 +186,6 @@
                 grid.appendChild(card);
             });
         });
-
-        async function uploadImage() {
-            const file = document.getElementById('imageFile').files[0];
-            if (!file) return alert('Select an image.');
-            document.getElementById('uploadBtn').disabled = true;
-            document.getElementById('loading-txt').style.display = 'block';
-
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                await db.collection("summerPictures").add({
-                    src: e.target.result,
-                    title: document.getElementById('imageTitle').value || 'Untitled',
-                    likes: 0
-                });
-                location.reload();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function likeItem(docId, currentLikes) {
-    let likedPhotos = JSON.parse(localStorage.getItem('likedPhotos')) || [];
-    
-    // Diagnostic: Print to console to see what's happening
-    console.log("Current likes:", currentLikes);
-    console.log("Liked list:", likedPhotos);
-
-    if (likedPhotos.includes(docId)) {
-        alert("あなたは既にこの写真に「いいね！」をしました！");
-        return;
-    }
-
-    try {
-        // Perform the update
-        await db.collection("summerPictures").doc(docId).update({ 
-            likes: currentLikes + 1 
-        });
-        
-        // Success: Update local storage
-        likedPhotos.push(docId);
-        localStorage.setItem('likedPhotos', JSON.stringify(likedPhotos));
-        console.log("Like registered successfully.");
-    } catch (err) {
-        console.error("Firestore Error Details:", err);
-        alert("更新に失敗しました。コンソールを確認してください。");
-    }
-}
     </script>
 </body>
 </html>
