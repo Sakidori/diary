@@ -171,21 +171,32 @@
         }
 
         async function likeItem(docId, currentLikes) {
-            let likedPhotos = JSON.parse(localStorage.getItem('likedPhotos')) || [];
-            if (likedPhotos.includes(docId)) {
-                alert("あなたは既にこの写真に「いいね！」をしました！");
-                return;
-            }
-            try {
-                await db.collection("summerPictures").doc(docId).update({ likes: currentLikes + 1 });
-                likedPhotos.push(docId);
-                localStorage.setItem('likedPhotos', JSON.stringify(likedPhotos));
-            } catch (err) { alert("いいね！の送信に失敗しました。"); }
-        }
+    let likedPhotos = JSON.parse(localStorage.getItem('likedPhotos')) || [];
+    
+    // Diagnostic: Print to console to see what's happening
+    console.log("Current likes:", currentLikes);
+    console.log("Liked list:", likedPhotos);
 
-        async function deletePhoto(id) {
-            if (confirm("Delete this?")) await db.collection("summerPictures").doc(id).delete();
-        }
+    if (likedPhotos.includes(docId)) {
+        alert("あなたは既にこの写真に「いいね！」をしました！");
+        return;
+    }
+
+    try {
+        // Perform the update
+        await db.collection("summerPictures").doc(docId).update({ 
+            likes: currentLikes + 1 
+        });
+        
+        // Success: Update local storage
+        likedPhotos.push(docId);
+        localStorage.setItem('likedPhotos', JSON.stringify(likedPhotos));
+        console.log("Like registered successfully.");
+    } catch (err) {
+        console.error("Firestore Error Details:", err);
+        alert("更新に失敗しました。コンソールを確認してください。");
+    }
+}
     </script>
 </body>
 </html>
