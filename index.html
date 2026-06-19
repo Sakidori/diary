@@ -373,7 +373,7 @@
         @media (max-width: 768px) {
             body {
                 height: auto;
-                width: 100%;          
+                width: 100%;    
                 margin: 0 auto;        
                 box-sizing: border-box;
                 overflow-x: hidden;
@@ -394,7 +394,7 @@
             }
 
             .main-title {
-                width: 90%;      
+                width: 90%;        
                 height: auto;
                 margin-top: 10px;
                 margin-bottom: 10px;
@@ -537,6 +537,7 @@
 
     <script>
 
+
 const firebaseConfig = { 
     apiKey: "AIzaSyC4epDF_XFTi3MEuJHgrzbE7gVCFZ3piM0", 
     projectId: "summer-diary-2", 
@@ -611,7 +612,7 @@ for(let i = 1; i <= 5; i++) {
             submitBtn.disabled = false;
         }
 
-       async function handleSubmission() {
+        async function handleSubmission() {
 
     await document.fonts.ready;
     await new Promise(resolve => setTimeout(resolve, 200));
@@ -624,8 +625,6 @@ for(let i = 1; i <= 5; i++) {
         alert("すべての項目に正しい数字を入力してください。");
         return;
     }
-
-
     const liveTitles = document.querySelectorAll('#board .title-text');
     const templateTitles = document.querySelectorAll('#submission-template .title-text');
     
@@ -646,7 +645,6 @@ for(let i = 1; i <= 5; i++) {
     const boardFilename = `${targetFolder}_board_${Date.now()}.png`;
 
     try {
-
         const templateElement = document.getElementById('submission-template');
         const canvas = await html2canvas(templateElement, {
             scale: 1.5,
@@ -657,7 +655,7 @@ for(let i = 1; i <= 5; i++) {
         const base64Board = canvas.toDataURL('image/png', 0.8).split(',')[1];
         await uploadP(boardFilename, base64Board, 'image/png', targetFolder);
 
-const polaroids = document.querySelectorAll('#board .polaroid');
+        const polaroids = document.querySelectorAll('#board .polaroid');
 
 for (let i = 0; i < polaroids.length; i++) {
     const fileInput = polaroids[i].querySelector('.file-input');
@@ -674,7 +672,7 @@ for (let i = 0; i < polaroids.length; i++) {
 
         alert("成功！ボードが送信されました。");
         closeModal();
-} catch (error) {
+  } catch (error) {
     console.error("Full error object:", error);
     // This will alert the actual error message instead of the generic one
     alert("送信に失敗しました: " + error.message); 
@@ -682,6 +680,7 @@ for (let i = 0; i < polaroids.length; i++) {
     loadingMsg.style.display = 'none';
 }
 }
+
         function compressImage(file, maxWidth, maxHeight) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
