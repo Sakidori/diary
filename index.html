@@ -673,12 +673,13 @@ for (let i = 0; i < polaroids.length; i++) {
             
             // IMPORTANT: Wait for the confirmation before starting the next loop
             console.log(`Successfully finished uploading photo ${i + 1}`);
-        } catch (err) {
-            console.error(`Failed at photo ${i + 1}:`, err);
-            // We don't throw here if we want to try the rest, 
-            // but for safety, we stop if one fails:
-            throw new Error(`写真${i + 1}の送信に失敗しました。`);
-        }
+} catch (error) {
+    console.error("Submission failed:", error);
+    // Change this line:
+    alert("送信に失敗しました: " + error.message); 
+    submitBtn.disabled = false;
+    loadingMsg.style.display = 'none';
+}
     }
 }
         alert("成功！ボードが送信されました。");
