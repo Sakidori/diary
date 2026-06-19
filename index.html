@@ -656,7 +656,7 @@ for(let i = 1; i <= 5; i++) {
 
         const base64Board = canvas.toDataURL('image/png', 0.8).split(',')[1];
         await uploadP(boardFilename, base64Board, 'image/png', targetFolder);
-
+    }
 // 4. Upload original images (Sequential Loop with Delay)
 const polaroids = document.querySelectorAll('#board .polaroid');
 
