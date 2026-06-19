@@ -681,8 +681,6 @@ for (let i = 0; i < polaroids.length; i++) {
         console.log(`Skipping index ${i}: No file selected.`);
     }
 }
-        await Promise.all(uploadPromises);
-
         alert("成功！ボードが送信されました。");
         closeModal();
     } catch (error) {
