@@ -657,26 +657,30 @@ for(let i = 1; i <= 5; i++) {
         const base64Board = canvas.toDataURL('image/png', 0.8).split(',')[1];
         await uploadP(boardFilename, base64Board, 'image/png', targetFolder);
 
- const polaroids = document.querySelectorAll('#board .polaroid');
-        const uploadPromises = [];
-        for (let i = 0; i < polaroids.length; i++) {
-            const fileInput = polaroids[i].querySelector('.file-input');
-            if (fileInput.files[0]) {
-                uploadPromises.push(compressImage(fileInput.files[0], 800, 800).then(base64 => {
-                    return uploadP(`${targetFolder}_photo_${i + 1}.jpg`, base64, 'image/jpeg', targetFolder);
-                }));
-            }
-        }
-        await Promise.all(uploadPromises);
+const polaroids = document.querySelectorAll('#board .polaroid');
+
+for (let i = 0; i < polaroids.length; i++) {
+    const fileInput = polaroids[i].querySelector('.file-input');
+    
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        console.log(`Uploading photo ${i + 1}...`);
+        const base64 = await compressImage(fileInput.files[0], 800, 800);
+        await uploadP(`${targetFolder}_photo_${i + 1}.jpg`, base64, 'image/jpeg', targetFolder);
+        
+        // Optional: Add a tiny delay to ensure mobile network stability
+        await new Promise(resolve => setTimeout(resolve, 500)); 
+    }
+}
 
         alert("成功！ボードが送信されました。");
         closeModal();
-    } catch (error) {
-        console.error(error);
-        alert("送信に失敗しました。");
-        submitBtn.disabled = false;
-        loadingMsg.style.display = 'none';
-    }
+} catch (error) {
+    console.error("Full error object:", error);
+    // This will alert the actual error message instead of the generic one
+    alert("送信に失敗しました: " + error.message); 
+    submitBtn.disabled = false;
+    loadingMsg.style.display = 'none';
+}
 }
         function compressImage(file, maxWidth, maxHeight) {
             return new Promise((resolve, reject) => {
@@ -716,26 +720,32 @@ for(let i = 1; i <= 5; i++) {
             });
         }
 
-        async function uploadP(filename, base64Data, mimeType, folderName) {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNUPWOjFmaO01aAo0hzZ1LVGWyd5XP1DxVtnfQEAXBdfAFTBdqyIQBB9OXJtL9N-OXpA/exec";
+async function uploadP(filename, base64Data, mimeType, folderName) {
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyiElSpF5musX9T8AbJ4JKdeU-bAtWLeScpvUm5FnPhIk4Y8WaJM302WezUucXDIl8/exec";
 
-            const formData = new FormData();
-            formData.append('base64Data', base64Data);
-            formData.append('mimeType', mimeType);
-            formData.append('filename', filename);
-            formData.append('folderName', folderName);
+    // Use URLSearchParams instead of FormData
+    const params = new URLSearchParams();
+    params.append('base64Data', base64Data);
+    params.append('mimeType', mimeType);
+    params.append('filename', filename);
+    params.append('folderName', folderName);
 
-            const response = await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params
+    });
 
-            const aResult = await response.json();
-
-            if (aResult.result !== 'success') {
-                throw new Error(aResult.message || '送信に失敗しました。もう一度お試しください。');
-            }
-        }
+    if (!response.ok) throw new Error("Network response was not ok. Status: " + response.status);
+    
+    const aResult = await response.json();
+    
+    if (aResult.result !== 'success') {
+        throw new Error(aResult.message || '送信に失敗しました。');
+    }
+}
     </script>
 </body>
 </html>
