@@ -656,7 +656,7 @@ for(let i = 1; i <= 5; i++) {
 
         const base64Board = canvas.toDataURL('image/png', 0.8).split(',')[1];
         await uploadP(boardFilename, base64Board, 'image/png', targetFolder);
-    }
+
 // 4. Upload original images (Sequential Loop with Delay)
 const polaroids = document.querySelectorAll('#board .polaroid');
 
@@ -679,6 +679,17 @@ for (let i = 0; i < polaroids.length; i++) {
             console.error(`Failed at photo ${i + 1}:`, err);
             throw new Error(`写真${i + 1}の送信に失敗しました。`);
         }
+    } else {
+        console.log(`Skipping index ${i}: No file selected.`);
+    }
+}
+        alert("成功！ボードが送信されました。");
+        closeModal();
+    } catch (error) {
+        console.error(error);
+        alert("送信に失敗しました。");
+        submitBtn.disabled = false;
+        loadingMsg.style.display = 'none';
     }
 }
         function compressImage(file, maxWidth, maxHeight) {
