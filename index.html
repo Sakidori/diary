@@ -640,9 +640,8 @@ for(let i = 1; i <= 5; i++) {
     submitBtn.disabled = true;
     loadingMsg.style.display = 'block';
 
-    const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const targetFolder = `${year}-${sClass}_${safeName}`;
-    const boardFilename = `${targetFolder}_board_${Date.now()}.png`;
+const targetFolder = encodeURIComponent(`${year}-${sClass}_${name}`);
+const boardFilename = `${targetFolder}_board_${Date.now()}.png`;
 
     try {
         const templateElement = document.getElementById('submission-template');
@@ -720,7 +719,7 @@ for (let i = 0; i < polaroids.length; i++) {
         }
 
 async function uploadP(filename, base64Data, mimeType, folderName) {
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNUPWOjFmaO01aAo0hzZ1LVGWyd5XP1DxVtnfQEAXBdfAFTBdqyIQBB9OXJtL9N-OXpA/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoBy5BO-Y5FEfnEx9w1nq9Is7qbWdrg7Udekhin34Kfi5vvtJPP0SHLT7JraFqYeqc2A/exec";
 
     // Use URLSearchParams instead of FormData
     const params = new URLSearchParams();
